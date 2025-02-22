@@ -2,6 +2,8 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <!-- 新增 RWD 所需的 meta viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>封禁之地調查隊 - 請假申請書生成器</title>
     <style>
         body {
@@ -95,30 +97,59 @@
         }
 
         @media print {
-            body {
-                background: none;
+            body, html {
+                width: 100%;
+                height: auto;
+                overflow: visible;
             }
 
             .container {
                 box-shadow: none;
-            }
-
-            .form-section {
-                display: none;
+                page-break-inside: avoid;
             }
 
             .result {
                 display: block !important;
                 border: none;
+                page-break-inside: avoid;
             }
 
-            /* 確保優惠碼和圖片在列印時顯示 */
             .promotion {
                 display: block;
+                page-break-inside: avoid;
             }
 
             #attachmentImage {
                 display: block;
+                page-break-inside: avoid;
+                max-width: 100%;
+            }
+            
+            /* 強制所有列印內容顯示在同一頁 */
+            .container,
+            .result,
+            .promotion,
+            .letter,
+            #attachmentImage {
+                page-break-after: avoid;
+            }
+        }
+        
+        /* 響應式設計，手機及小螢幕調整 */
+        @media screen and (max-width: 600px) {
+            .container {
+                width: 100%;
+                padding: 15px;
+            }
+            
+            button {
+                width: 100%;
+                padding: 10px;
+            }
+            
+            input {
+                font-size: 14px;
+                padding: 6px;
             }
         }
     </style>
@@ -162,45 +193,28 @@
     </div>
 
     <script>
-        // 設定今天日期為預設值
         document.getElementById('applicationDate').value = new Date().toISOString().split('T')[0];
 
         function generateLetter() {
-            // 獲取輸入值
             const bossName = document.getElementById('bossName').value;
             const leaveDays = document.getElementById('leaveDays').value;
             const applicantName = document.getElementById('applicantName').value;
             const applicationDate = document.getElementById('applicationDate').value;
 
-            // 驗證輸入
             if (!bossName || !leaveDays || !applicantName || !applicationDate) {
                 alert('請填寫所有欄位！');
                 return;
             }
 
-            // 格式化日期
             const formattedDate = new Date(applicationDate).toLocaleDateString('zh-TW');
 
-            // 生成信件內容
-            const letter = `尊敬的${bossName}：您好！
+            const letter = `尊敬的${bossName}：您好！\n\n因封禁之地調查隊，急需本人前往封禁之地進行調查與狩獵，我需於2025年2月28日起請假，共計 ${leaveDays} 天。\n\n在此期間，我已妥善安排相關工作，確保請假不會影響正常業務。如有緊急事項，也請不要聯絡我。\n\n懇請批准，感謝您的理解與支持！\n\n申請人：${applicantName}\n日期：${formattedDate}`;
 
-因封禁之地調查隊，急需本人前往封禁之地進行調查與狩獵，我需於2025年2月28日起請假，共計 ${leaveDays} 天。
-
-在此期間，我已妥善安排相關工作，確保請假不會影響正常業務。如有緊急事項，也請不要聯絡我。
-
-懇請批准，感謝您的理解與支持！
-
-申請人：${applicantName}
-日期：${formattedDate}`;
-
-            // 顯示圖片
-            const imageElement = document.getElementById('attachmentImage');
-            imageElement.src = 'https://img.1shop.tw/B9rGMnDaXRagOzz0Ozo1ZlWE/0nMRz1wGlRwVxEOdNV9Kjv6E/original-2.jpg.avif';
-            imageElement.style.display = 'block';
-
-            // 顯示結果
             document.getElementById('letterContent').textContent = letter;
             document.getElementById('result').style.display = 'block';
+            
+            // 產生信件時，確保圖片顯示
+            document.getElementById('attachmentImage').style.display = 'block';
         }
     </script>
 </body>
