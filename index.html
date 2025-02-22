@@ -1,0 +1,23 @@
+function onFormSubmit(e) {
+  var formResponse = e.response;
+  var itemResponses = formResponse.getItemResponses();
+  
+  // 獲取四個輸入值
+  var bossName = itemResponses[0].getResponse();
+  var leaveDays = itemResponses[1].getResponse();
+  var applicantName = itemResponses[2].getResponse();
+  var applicationDate = itemResponses[3].getResponse();
+  
+  // 生成申請書內容
+  var letterContent = "尊敬的老闆娘:" + bossName + "，您好！因封禁之地調查隊急需本人前往封禁之地進行調查與狩獵，我需於2025年2月28日起請假，共計 " + leaveDays + " 天。在此期間，我已妥善安排相關工作，確保請假不會影響正常業務。如有緊急事項，也請不要聯絡我。懇請批准，感謝您的理解與支持！申請人：" + applicantName + " 日期：" + applicationDate;
+  
+  // 發送電子郵件到填表人的郵箱
+  var email = formResponse.getRespondentEmail();
+  if (email) {
+    MailApp.sendEmail({
+      to: email,
+      subject: "封禁之地調查隊 - 請假申請書",
+      htmlBody: letterContent.replace(/\n/g, "<br>")
+    });
+  }
+}
