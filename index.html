@@ -68,7 +68,6 @@
             background-color: #f9f9f9;
             border-radius: 4px;
             border-left: 5px solid #3498db;
-            display: none;
         }
 
         .letter {
@@ -89,10 +88,15 @@
         @media print {
             body {
                 background: none;
+                font-size: 10px;
+                line-height: 1.1;
+                margin: 0;
             }
 
             .container {
                 box-shadow: none;
+                padding: 0;
+                margin: 0;
             }
 
             .form-section {
@@ -103,51 +107,65 @@
                 display: block !important;
                 border: none;
                 padding: 0;
-                page-break-inside: avoid; /* 防止列印時內容被分頁 */
+                page-break-inside: avoid;
+                max-height: 100%;
+            }
+
+            h1 {
+                font-size: 14px;
+                margin: 0 0 5px 0;
+                page-break-after: avoid;
+            }
+
+            .letter {
+                margin: 0 0 5px 0;
+                white-space: pre-line;
+            }
+
+            .promotion {
+                margin: 0 0 5px 0;
+                padding: 5px;
+                font-size: 10px;
             }
 
             #attachmentImage {
                 display: block;
                 width: 100%;
-                max-width: 100%;
+                max-height: 150px;
                 height: auto;
+                page-break-before: avoid;
             }
 
-            .letter, .promotion, #attachmentImage {
-                margin-bottom: 10px;
+            button {
+                display: none;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>封禁之地調查隊 - 請假申請書生成器</h1>
-
         <div class="form-section">
             <div class="form-group">
                 <label for="bossName">向誰申請：</label>
                 <input type="text" id="bossName" required>
             </div>
-
             <div class="form-group">
                 <label for="leaveDays">請假幾天：</label>
                 <input type="number" id="leaveDays" required min="1">
             </div>
-
             <div class="form-group">
                 <label for="applicantName">申請人：</label>
                 <input type="text" id="applicantName" required>
             </div>
-
             <div class="form-group">
                 <label for="applicationDate">申請日期：</label>
                 <input type="date" id="applicationDate" required>
             </div>
-
             <button onclick="generateLetter()">生成申請書</button>
         </div>
 
-        <div id="result" class="result">
+        <div id="result" class="result" style="display: none;">
+            <h1>封禁之地調查隊 - 請假申請書生成器</h1>
             <div id="letterContent" class="letter"></div>
             <div class="promotion">
                 <strong>輸入優惠碼，購買荒嶺雷爪現折100元！</strong>
@@ -158,26 +176,20 @@
     </div>
 
     <script>
-        // 設定今天日期為預設值
         document.getElementById('applicationDate').value = new Date().toISOString().split('T')[0];
 
         function generateLetter() {
-            // 獲取輸入值
             const bossName = document.getElementById('bossName').value;
             const leaveDays = document.getElementById('leaveDays').value;
             const applicantName = document.getElementById('applicantName').value;
             const applicationDate = document.getElementById('applicationDate').value;
 
-            // 驗證輸入
             if (!bossName || !leaveDays || !applicantName || !applicationDate) {
                 alert('請填寫所有欄位！');
                 return;
             }
 
-            // 格式化日期
             const formattedDate = new Date(applicationDate).toLocaleDateString('zh-TW');
-
-            // 生成信件內容
             const letter = `尊敬的${bossName}：您好！
 
 因封禁之地調查隊，急需本人前往封禁之地進行調查與狩獵，我需於2025年2月28日起請假，共計 ${leaveDays} 天。
@@ -189,12 +201,8 @@
 申請人：${applicantName}
 日期：${formattedDate}`;
 
-            // 顯示圖片
-            const imageElement = document.getElementById('attachmentImage');
-            imageElement.style.display = 'block';
-
-            // 顯示結果
             document.getElementById('letterContent').textContent = letter;
+            document.getElementById('attachmentImage').style.display = 'block';
             document.getElementById('result').style.display = 'block';
         }
     </script>
