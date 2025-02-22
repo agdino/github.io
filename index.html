@@ -1,23 +1,176 @@
-function onFormSubmit(e) {
-  var formResponse = e.response;
-  var itemResponses = formResponse.getItemResponses();
-  
-  // 獲取四個輸入值
-  var bossName = itemResponses[0].getResponse();
-  var leaveDays = itemResponses[1].getResponse();
-  var applicantName = itemResponses[2].getResponse();
-  var applicationDate = itemResponses[3].getResponse();
-  
-  // 生成申請書內容
-  var letterContent = "尊敬的老闆娘:" + bossName + "，您好！因封禁之地調查隊急需本人前往封禁之地進行調查與狩獵，我需於2025年2月28日起請假，共計 " + leaveDays + " 天。在此期間，我已妥善安排相關工作，確保請假不會影響正常業務。如有緊急事項，也請不要聯絡我。懇請批准，感謝您的理解與支持！申請人：" + applicantName + " 日期：" + applicationDate;
-  
-  // 發送電子郵件到填表人的郵箱
-  var email = formResponse.getRespondentEmail();
-  if (email) {
-    MailApp.sendEmail({
-      to: email,
-      subject: "封禁之地調查隊 - 請假申請書",
-      htmlBody: letterContent.replace(/\n/g, "<br>")
-    });
-  }
-}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>封禁之地調查隊 - 請假申請書生成器</title>
+    <style>
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            background-image: linear-gradient(45deg, #f5f5f5 25%, transparent 25%),
+                            linear-gradient(-45deg, #f5f5f5 25%, transparent 25%),
+                            linear-gradient(45deg, transparent 75%, #f5f5f5 75%),
+                            linear-gradient(-45deg, transparent 75%, #f5f5f5 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #34495e;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            margin: 20px auto;
+            width: 200px;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            border-left: 5px solid #3498db;
+            display: none;
+        }
+
+        .letter {
+            line-height: 1.8;
+            white-space: pre-line;
+        }
+
+        @media print {
+            body {
+                background: none;
+            }
+            .container {
+                box-shadow: none;
+            }
+            .form-section {
+                display: none;
+            }
+            .result {
+                display: block !important;
+                border: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>封禁之地調查隊 - 請假申請書生成器</h1>
+        
+        <div class="form-section">
+            <div class="form-group">
+                <label for="bossName">老闆娘姓名：</label>
+                <input type="text" id="bossName" required>
+            </div>
+
+            <div class="form-group">
+                <label for="leaveDays">請假天數：</label>
+                <input type="number" id="leaveDays" required min="1">
+            </div>
+
+            <div class="form-group">
+                <label for="applicantName">申請人：</label>
+                <input type="text" id="applicantName" required>
+            </div>
+
+            <div class="form-group">
+                <label for="applicationDate">申請日期：</label>
+                <input type="date" id="applicationDate" required>
+            </div>
+
+            <button onclick="generateLetter()">生成申請書</button>
+        </div>
+
+        <div id="result" class="result">
+            <div id="letterContent" class="letter"></div>
+            <button onclick="window.print()">列印申請書</button>
+        </div>
+    </div>
+
+    <script>
+        // 設定今天日期為預設值
+        document.getElementById('applicationDate').value = new Date().toISOString().split('T')[0];
+
+        function generateLetter() {
+            // 獲取輸入值
+            const bossName = document.getElementById('bossName').value;
+            const leaveDays = document.getElementById('leaveDays').value;
+            const applicantName = document.getElementById('applicantName').value;
+            const applicationDate = document.getElementById('applicationDate').value;
+
+            // 驗證輸入
+            if (!bossName || !leaveDays || !applicantName || !applicationDate) {
+                alert('請填寫所有欄位！');
+                return;
+            }
+
+            // 格式化日期
+            const formattedDate = new Date(applicationDate).toLocaleDateString('zh-TW');
+
+            // 生成信件內容
+            const letter = `尊敬的老闆娘：${bossName}，您好！
+
+因封禁之地調查隊急需本人前往封禁之地進行調查與狩獵，我需於2025年2月28日起請假，共計 ${leaveDays} 天。
+
+在此期間，我已妥善安排相關工作，確保請假不會影響正常業務。如有緊急事項，也請不要聯絡我。
+
+懇請批准，感謝您的理解與支持！
+
+申請人：${applicantName}
+日期：${formattedDate}`;
+
+            // 顯示結果
+            document.getElementById('letterContent').textContent = letter;
+            document.getElementById('result').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
