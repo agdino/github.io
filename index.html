@@ -96,7 +96,7 @@
             text-align: center;
         }
 
-        /* 手機版調整：增大字體與元件尺寸 */
+        /* 響應式設計，調整手機版字體與元件尺寸 */
         @media screen and (max-width: 600px) {
             body {
                 font-size: 18px;
@@ -116,41 +116,42 @@
         }
 
         @media print {
-            body, html {
-                width: 100%;
-                height: auto;
-                overflow: visible;
+            /* 隱藏輸入區塊 */
+            .form-section {
+                display: none;
             }
-
-            /* 將容器縮放以確保所有內容印在同一頁 */
+            /* 調整頁面邊距 */
+            @page {
+                margin: 10mm;
+            }
+            body, html {
+                margin: 0;
+                padding: 0;
+                width: 100%;
+            }
+            /* 強制將所有列印內容顯示在同一頁 */
             .container {
                 box-shadow: none;
-                page-break-inside: avoid;
-                transform: scale(0.8);
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                /* 根據內容長度調整縮放比例，確保全部內容在一頁 */
+                transform: scale(0.95);
                 transform-origin: top left;
-                width: 125%;
             }
-
             .result {
                 display: block !important;
                 border: none;
                 page-break-inside: avoid;
             }
-
-            .promotion {
-                display: block;
+            .promotion, .letter, #attachmentImage {
                 page-break-inside: avoid;
             }
-
-            #attachmentImage {
-                display: block;
-                page-break-inside: avoid;
-                max-width: 100%;
-            }
-            
-            /* 避免列印時產生多餘分頁 */
+            /* 防止列印時產生額外分頁 */
             .container, .result, .promotion, .letter, #attachmentImage {
                 page-break-after: avoid;
+                page-break-before: avoid;
             }
         }
     </style>
@@ -188,7 +189,6 @@
             <div class="promotion">
                 <strong>輸入優惠碼，購買荒嶺雷爪現折100元！</strong>
             </div>
-            <!-- 使用有效的圖片來源，確保圖片不消失 -->
             <img id="attachmentImage" src="https://img.1shop.tw/B9rGMnDaXRagOzz0Ozo1ZlWE/0nMRz1wGlRwVxEOdNV9Kjv6E/original-2.jpg.avif" alt="附加圖片" style="display: none; max-width: 100%;">
             <button onclick="window.print()">列印申請書</button>
         </div>
