@@ -213,7 +213,7 @@
 
         function generateLetter() {
             const bossName = document.getElementById('bossName').value;
-            const leaveDays = document.getElementById('leaveDays').value;
+            const leaveDays = parseInt(document.getElementById('leaveDays').value, 10);
             const applicantName = document.getElementById('applicantName').value;
             const applicationDate = document.getElementById('applicationDate').value;
 
@@ -224,7 +224,23 @@
 
             const formattedDate = new Date(applicationDate).toLocaleDateString('zh-TW');
 
-            const letter = `尊敬的${bossName}：您好！\n\n因封禁之地調查隊，急需本人前往封禁之地進行調查與狩獵，我需於2025年2月28日起請假，共計 ${leaveDays} 天。\n\n在此期間，我已妥善安排相關工作，確保請假不會影響正常業務。如有緊急事項，也請不要聯絡我。\n\n懇請批准，感謝您的理解與支持！\n\n申請人：${applicantName}\n日期：${formattedDate}`;
+            // 固定起始日期為2025年2月28日，計算結束日期（包含當天）
+            const startDate = new Date("2025-02-28");
+            const endDate = new Date(startDate);
+            // 若請假天數為X，結束日期 = 起始日期 + (X - 1) 天
+            endDate.setDate(startDate.getDate() + leaveDays - 1);
+            const endDateFormatted = `${endDate.getFullYear()}年${endDate.getMonth() + 1}月${endDate.getDate()}日`;
+
+            const letter = `尊敬的${bossName}：您好！
+            
+因封禁之地調查隊，急需本人前往封禁之地進行調查與狩獵，本人需於2025年2月28日至${endDateFormatted}這段期間進行請假作業，共計 ${leaveDays} 天。
+
+在此期間，我已妥善安排相關工作，確保請假不會影響正常業務。如有緊急事項，也請不要聯絡我。
+
+懇請批准，感謝您的理解與支持！
+
+申請人：${applicantName}
+日期：${formattedDate}`;
 
             document.getElementById('letterContent').textContent = letter;
             document.getElementById('result').style.display = 'block';
