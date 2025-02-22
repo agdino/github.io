@@ -113,15 +113,14 @@ html
                 border: none;
             }
 
+            /* 確保優惠碼和圖片在列印時顯示 */
             .promotion {
-                display: none;
+                display: block;
             }
-            /* 如果不需要列印圖片，可以取消註釋以下規則 */
-            /*
+
             #attachmentImage {
-                display: none;
+                display: block;
             }
-            */
         }
     </style>
 </head>
@@ -154,12 +153,12 @@ html
         </div>
 
         <div id="result" class="result">
-            <img id="attachmentImage" src="" alt="附加圖片" style="display: none; max-width: 100%;">
             <div id="letterContent" class="letter"></div>
-            <button onclick="window.print()">列印申請書</button>
             <div class="promotion">
-                輸入優惠碼，購買荒嶺雷爪現折100元！
+                <strong>輸入優惠碼，購買荒嶺雷爪現折100元！</strong>
             </div>
+            <img id="attachmentImage" src="" alt="附加圖片" style="display: none; max-width: 100%;">
+            <button onclick="window.print()">列印申請書</button>
         </div>
     </div>
 
@@ -183,11 +182,6 @@ html
             // 格式化日期
             const formattedDate = new Date(applicationDate).toLocaleDateString('zh-TW');
 
-            // 顯示圖片
-            const imageElement = document.getElementById('attachmentImage');
-            imageElement.src = 'https://img.1shop.tw/B9rGMnDaXRagOzz0Ozo1ZlWE/0nMRz1wGlRwVxEOdNV9Kjv6E/original-2.jpg.avif';
-            imageElement.style.display = 'block';
-
             // 生成信件內容
             const letter = `尊敬的${bossName}：您好！
 
@@ -199,6 +193,11 @@ html
 
 申請人：${applicantName}
 日期：${formattedDate}`;
+
+            // 顯示圖片
+            const imageElement = document.getElementById('attachmentImage');
+            imageElement.src = 'https://img.1shop.tw/B9rGMnDaXRagOzz0Ozo1ZlWE/0nMRz1wGlRwVxEOdNV9Kjv6E/original-2.jpg.avif';
+            imageElement.style.display = 'block';
 
             // 顯示結果
             document.getElementById('letterContent').textContent = letter;
