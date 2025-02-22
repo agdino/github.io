@@ -53,6 +53,7 @@
             border: 1px solid #bdc3c7;
             border-radius: 4px;
             font-size: 16px;
+            box-sizing: border-box;
         }
 
         button {
@@ -96,6 +97,12 @@
             text-align: center;
         }
 
+        /* 修改促銷區塊：文字中加入超連結 */
+        .promotion a {
+            color: #856404;
+            text-decoration: underline;
+        }
+
         /* 響應式設計，調整手機版字體與元件尺寸 */
         @media screen and (max-width: 600px) {
             body {
@@ -112,6 +119,7 @@
             }
             .container {
                 padding: 20px;
+                margin: 10px; /* 增加外邊距，避免貼到螢幕邊緣 */
             }
         }
 
@@ -129,14 +137,14 @@
                 padding: 0;
                 width: 100%;
             }
-            /* 強制將所有列印內容顯示在同一頁 */
+            /* 強制將結果內容顯示在同一頁 */
             .container {
                 box-shadow: none;
                 position: absolute;
                 top: 0;
                 left: 0;
                 width: 100%;
-                /* 根據內容長度調整縮放比例，確保全部內容在一頁 */
+                /* 可依內容調整縮放比例 */
                 transform: scale(0.95);
                 transform-origin: top left;
             }
@@ -187,7 +195,13 @@
         <div id="result" class="result">
             <div id="letterContent" class="letter"></div>
             <div class="promotion">
-                <strong>輸入優惠碼，購買荒嶺雷爪現折100元！</strong>
+                <strong>
+                    輸入優惠碼，購買 
+                    <a href="https://www.gamenir.com.tw/products/%E4%B8%83%E4%BB%A3%E7%89%B9%E4%BB%95%E6%89%8B%E6%8A%8AProX-7Ds%E8%8D%92%E5%B6%BA" target="_blank">荒嶺</a>
+                    / 
+                    <a href="https://www.gamenir.com.tw/products/%E4%B8%83%E4%BB%A3%E7%89%B9%E4%BB%95%E6%89%8B%E6%8A%8AProX-7Ds%E9%9B%B7%E7%88%AA" target="_blank">雷爪</a>
+                    現折100元！
+                </strong>
             </div>
             <img id="attachmentImage" src="https://img.1shop.tw/B9rGMnDaXRagOzz0Ozo1ZlWE/0nMRz1wGlRwVxEOdNV9Kjv6E/original-2.jpg.avif" alt="附加圖片" style="display: none; max-width: 100%;">
             <button onclick="window.print()">列印申請書</button>
