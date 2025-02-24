@@ -2,7 +2,6 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <!-- RWD 必備 meta -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>封禁之地調查隊 - 請假申請書生成器</title>
     <style>
@@ -97,13 +96,22 @@
             text-align: center;
         }
 
-        /* 修改促銷區塊：文字中加入超連結 */
         .promotion a {
             color: #856404;
             text-decoration: underline;
         }
 
-        /* 響應式設計，調整手機版字體與元件尺寸 */
+        .image-wrapper {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .protection-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 10px;
+        }
+
         @media screen and (max-width: 600px) {
             body {
                 font-size: 18px;
@@ -119,16 +127,14 @@
             }
             .container {
                 padding: 20px;
-                margin: 10px; /* 增加外邊距，避免貼到螢幕邊緣 */
+                margin: 10px;
             }
         }
 
         @media print {
-            /* 隱藏輸入區塊 */
             .form-section {
                 display: none;
             }
-            /* 調整頁面邊距 */
             @page {
                 margin: 10mm;
             }
@@ -137,14 +143,12 @@
                 padding: 0;
                 width: 100%;
             }
-            /* 強制將結果內容顯示在同一頁 */
             .container {
                 box-shadow: none;
                 position: absolute;
                 top: 0;
                 left: 0;
                 width: 100%;
-                /* 可依內容調整縮放比例 */
                 transform: scale(0.95);
                 transform-origin: top left;
             }
@@ -156,10 +160,18 @@
             .promotion, .letter, #attachmentImage {
                 page-break-inside: avoid;
             }
-            /* 防止列印時產生額外分頁 */
             .container, .result, .promotion, .letter, #attachmentImage {
                 page-break-after: avoid;
                 page-break-before: avoid;
+            }
+            .image-wrapper {
+                page-break-inside: avoid;
+            }
+            .protection-text {
+                display: block;
+                text-align: center;
+                font-size: 12px;
+                color: #666;
             }
         }
     </style>
@@ -203,7 +215,13 @@
                     現折50元！
                 </strong>
             </div>
-            <img id="attachmentImage" src="https://img.1shop.tw/B9rGMnDaXRagOzz0Ozo1ZlWE/0nMRz1wGlRwVxEOdNV9Kjv6E/original-2.jpg.avif" alt="附加圖片" style="display: none; max-width: 100%;">
+            <div class="image-wrapper">
+                <img id="attachmentImage" src="https://img.1shop.tw/B9rGMnDaXRagOzz0Ozo1ZlWE/0nMRz1wGlRwVxEOdNV9Kjv6E/original-2.jpg.avif" alt="附加圖片" style="display: none; max-width: 100%;">
+                <p class="protection-text">
+                    *優惠碼僅限官網頁面使用<br>
+                    *優惠碼無法與其他活動併用
+                </p>
+            </div>
             <button onclick="window.print()">列印申請書</button>
         </div>
     </div>
@@ -223,11 +241,8 @@
             }
 
             const formattedDate = new Date(applicationDate).toLocaleDateString('zh-TW');
-
-            // 固定起始日期為2025年2月28日，計算結束日期（包含當天）
             const startDate = new Date("2025-02-28");
             const endDate = new Date(startDate);
-            // 若請假天數為X，結束日期 = 起始日期 + (X - 1) 天
             endDate.setDate(startDate.getDate() + leaveDays - 1);
             const endDateFormatted = `${endDate.getFullYear()}年${endDate.getMonth() + 1}月${endDate.getDate()}日`;
 
@@ -244,8 +259,6 @@
 
             document.getElementById('letterContent').textContent = letter;
             document.getElementById('result').style.display = 'block';
-            
-            // 產生信件時，確保圖片顯示
             document.getElementById('attachmentImage').style.display = 'block';
         }
     </script>
