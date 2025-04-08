@@ -1,264 +1,108 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>封禁之地調查隊 - 請假申請書生成器</title>
-    <style>
-        body {
-            font-family: 'Microsoft JhengHei', Arial, sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-            padding: 20px;
-            background-image: linear-gradient(45deg, #f5f5f5 25%, transparent 25%),
-                linear-gradient(-45deg, #f5f5f5 25%, transparent 25%),
-                linear-gradient(45deg, transparent 75%, #f5f5f5 75%),
-                linear-gradient(-45deg, transparent 75%, #f5f5f5 75%);
-            background-size: 20px 20px;
-            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #ecf0f1;
-            padding-bottom: 10px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            color: #34495e;
-            font-weight: bold;
-        }
-
-        input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #bdc3c7;
-            border-radius: 4px;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
-
-        button {
-            background-color: #3498db;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            display: block;
-            margin: 20px auto;
-            width: 200px;
-        }
-
-        button:hover {
-            background-color: #2980b9;
-        }
-
-        .result {
-            margin-top: 30px;
-            padding: 20px;
-            background-color: #f9f9f9;
-            border-radius: 4px;
-            border-left: 5px solid #3498db;
-            display: none;
-        }
-
-        .letter {
-            line-height: 1.8;
-            white-space: pre-line;
-        }
-
-        .promotion {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #fff3cd;
-            border-left: 5px solid #ffc107;
-            color: #856404;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .promotion a {
-            color: #856404;
-            text-decoration: underline;
-        }
-
-        .image-wrapper {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .protection-text {
-            font-size: 12px;
-            color: #666;
-            margin-top: 10px;
-        }
-
-        @media screen and (max-width: 600px) {
-            body {
-                font-size: 18px;
-            }
-            input {
-                font-size: 18px;
-                padding: 10px;
-            }
-            button {
-                font-size: 18px;
-                padding: 10px;
-                width: 100%;
-            }
-            .container {
-                padding: 20px;
-                margin: 10px;
-            }
-        }
-
-        @media print {
-            .form-section {
-                display: none;
-            }
-            @page {
-                margin: 10mm;
-            }
-            body, html {
-                margin: 0;
-                padding: 0;
-                width: 100%;
-            }
-            .container {
-                box-shadow: none;
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                transform: scale(0.95);
-                transform-origin: top left;
-            }
-            .result {
-                display: block !important;
-                border: none;
-                page-break-inside: avoid;
-            }
-            .promotion, .letter, #attachmentImage {
-                page-break-inside: avoid;
-            }
-            .container, .result, .promotion, .letter, #attachmentImage {
-                page-break-after: avoid;
-                page-break-before: avoid;
-            }
-            .image-wrapper {
-                page-break-inside: avoid;
-            }
-            .protection-text {
-                display: block;
-                text-align: center;
-                font-size: 12px;
-                color: #666;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>KOL 資料互動編輯系統</title>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; padding: 20px; background-color: #f9f9f9; }
+    .detail-panel { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; background: #fff; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 0 6px rgba(0,0,0,0.08); }
+    .field label { font-weight: bold; margin-bottom: 4px; }
+    .field input, .field textarea, .field select { width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; }
+    .buttons { margin-bottom: 20px; }
+    .buttons button { padding: 10px 16px; margin-right: 10px; font-size: 14px; border: none; border-radius: 5px; cursor: pointer; }
+    .save-btn { background-color: #007bff; color: white; }
+    .cancel-btn { background-color: #ccc; }
+    tr.selected { background-color: #d7f0ff !important; }
+    table { background: white; width: 100%; }
+    th, td { white-space: nowrap; }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>封禁之地調查隊 - 請假申請書生成器</h1>
-
-        <div class="form-section">
-            <div class="form-group">
-                <label for="bossName">向誰申請：</label>
-                <input type="text" id="bossName" required>
-            </div>
-
-            <div class="form-group">
-                <label for="leaveDays">請假幾天：</label>
-                <input type="number" id="leaveDays" required min="1">
-            </div>
-
-            <div class="form-group">
-                <label for="applicantName">申請人：</label>
-                <input type="text" id="applicantName" required>
-            </div>
-
-            <div class="form-group">
-                <label for="applicationDate">申請日期：</label>
-                <input type="date" id="applicationDate" required>
-            </div>
-
-            <button onclick="generateLetter()">生成申請書</button>
-        </div>
-
-        <div id="result" class="result">
-            <div id="letterContent" class="letter"></div>
-            <div class="promotion">
-            <strong>
-                <div style="color: black; margin-bottom: 0.5em; font-size: 1.2em;">\\\除了申請書，你還需要一隻好手把///<div>
-                <div>輸入優惠碼「<span style="color: red;">MH50</span>」，立減50元！</div>
-                <div>馬上下訂 <a href="https://www.gamenir.com.tw/products/%E4%B8%83%E4%BB%A3%E7%89%B9%E4%BB%95%E6%89%8B%E6%8A%8AProX-7Ds%E8%8D%92%E5%B6%BA" target="_blank">荒嶺</a> / <a href="https://www.gamenir.com.tw/products/%E4%B8%83%E4%BB%A3%E7%89%B9%E4%BB%95%E6%89%8B%E6%8A%8AProX-7Ds%E9%9B%B7%E7%88%AA" target="_blank">雷爪</a>特仕版-遊戲控制器</div>
-            </strong>
-            </div>
-            <div class="image-wrapper">
-                <img id="attachmentImage" src="https://img.1shop.tw/B9rGMnDaXRagOzz0Ozo1ZlWE/0nMRz1wGlRwVxEOdNV9Kjv6E/original-2.jpg.avif" alt="附加圖片" style="display: none; max-width: 100%;">
-                <p class="protection-text">
-                    *優惠碼僅限官網頁面使用<br>
-                    *優惠碼無法與其他活動併用
-                </p>
-            </div>
-            <button onclick="window.print()">列印申請書</button>
-        </div>
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <h2>KOL 資料互動編輯系統</h2>
+    <div>
+      <button onclick="addNewRow()" style="padding: 8px 16px; font-size: 14px; margin-right: 12px;">➕ 新增資料</button>
+      <a href="https://docs.google.com/spreadsheets/d/...your_sheet_url..." target="_blank" style="font-size: 14px;">📄 查看原始表單</a>
     </div>
+  </div>
 
-    <script>
-        document.getElementById('applicationDate').value = new Date().toISOString().split('T')[0];
+  <div id="loading-message" style="margin-top: 40px; text-align:center; font-size: 16px;">⏳ 正在載入資料，請稍候...</div>
 
-        function generateLetter() {
-            const bossName = document.getElementById('bossName').value;
-            const leaveDays = parseInt(document.getElementById('leaveDays').value, 10);
-            const applicantName = document.getElementById('applicantName').value;
-            const applicationDate = document.getElementById('applicationDate').value;
+  <div class="detail-panel" id="detail-panel"></div>
 
-            if (!bossName || !leaveDays || !applicantName || !applicationDate) {
-                alert('請填寫所有欄位！');
-                return;
-            }
+  <div class="buttons">
+    <button class="save-btn" onclick="saveData()">儲存</button>
+    <button class="cancel-btn" onclick="cancelEdit()">取消</button>
+  </div>
 
-            const formattedDate = new Date(applicationDate).toLocaleDateString('zh-TW');
-            const startDate = new Date("2025-02-28");
-            const endDate = new Date(startDate);
-            endDate.setDate(startDate.getDate() + leaveDays - 1);
-            const endDateFormatted = `${endDate.getFullYear()}年${endDate.getMonth() + 1}月${endDate.getDate()}日`;
+  <table id="kolTable" class="display" style="width:100%">
+    <thead><tr id="table-head"></tr></thead>
+    <tbody id="table-body"></tbody>
+  </table>
 
-            const letter = `尊敬的${bossName}：您好！
-            
-因封禁之地調查隊，急需本人前往封禁之地進行調查與狩獵，本人需於2025年2月28日至${endDateFormatted}這段期間進行請假作業，共計 ${leaveDays} 天。
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+  <script>
+    const apiUrl = "你的最新AppsScript網址";
+    let headers = [];
+    let rows = [];
+    let currentRow = null;
+    let selectOptions = {};
 
-在此期間，我已妥善安排相關工作，確保請假不會影響正常業務。如有緊急事項，也請不要聯絡我。
+    fetch(apiUrl, { mode: 'cors' })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("loading-message").style.display = "none";
+        headers = data.headers.filter(h => h && h.trim() !== "");
+        rows = data.rows;
+        selectOptions = data.selects || {};
 
-懇請批准，感謝您的理解與支持！
+        document.getElementById("table-head").innerHTML = headers.map(h => `<th>${h}</th>`).join("");
 
-申請人：${applicantName}
-日期：${formattedDate}`;
+        const tbody = document.getElementById("table-body");
+        rows.forEach((row) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = headers.map(h => `<td>${row[h] || ""}</td>`).join("");
+          tr.onclick = () => {
+            currentRow = row;
+            fillForm(row);
+            $('#kolTable').DataTable().$('tr.selected').removeClass('selected');
+            tr.classList.add('selected');
+          };
+          tbody.appendChild(tr);
+        });
 
-            document.getElementById('letterContent').textContent = letter;
-            document.getElementById('result').style.display = 'block';
-            document.getElementById('attachmentImage').style.display = 'block';
-        }
-    </script>
+        $('#kolTable').DataTable({ scrollX: true, pageLength: 10, language: { search: "搜尋：", lengthMenu: "顯示 _MENU_ 筆資料" }});
+      })
+      .catch(err => { document.getElementById("loading-message").innerText = "❌ 載入失敗：" + err.message; });
+
+    function fillForm(row) {
+      const panel = document.getElementById("detail-panel");
+      panel.innerHTML = headers.map(h => `
+        <div class="field">
+          <label>${h}</label>
+          ${selectOptions[h] ?
+            `<select multiple id="field-${h}">${selectOptions[h].map(opt => `<option ${row[h].includes(opt)?'selected':''}>${opt}</option>`).join('')}</select>` :
+            `<input id="field-${h}" value="${row[h]||''}">`
+          }
+        </div>`
+      ).join('');
+    }
+
+    function saveData() {
+      if (!currentRow) return alert("請先選擇一筆資料");
+      const update = {};
+      headers.forEach(h => {
+        const input = document.getElementById("field-" + h);
+        update[h] = input.tagName === "SELECT" ? [...input.selectedOptions].map(o=>o.value).join(", ") : input.value;
+      });
+      fetch(apiUrl, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(update), mode:'cors' })
+        .then(res => res.json()).then(() => { alert("✅ 儲存成功！"); location.reload(); });
+    }
+
+    function addNewRow(){ currentRow=headers.reduce((a,h)=>({...a,[h]:""}),{}); fillForm(currentRow); }
+    function cancelEdit(){ currentRow&&fillForm(currentRow); }
+  </script>
 </body>
 </html>
